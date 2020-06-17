@@ -10,12 +10,10 @@ import UIKit
 
 class MenuTableViewCell: UITableViewCell {
 
-    static let reuseId = "MenuTableCell"
     
-    let myLabel: UILabel = {
+    var myLabel: UILabel = {
        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Кастомный текст"
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = .white
         return label

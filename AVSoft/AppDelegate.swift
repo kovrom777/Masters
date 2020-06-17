@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if !UserDefaults.standard.bool(forKey: "isUserLoggedIn"){
             return loginViewController()
         }else{
-            return MainViewControllerViewController()
+            return EditingViewController()
         }
     }
     

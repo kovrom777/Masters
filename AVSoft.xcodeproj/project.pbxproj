@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		E00B66DA2498B1D600A89DC0 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00B66D92498B1D600A89DC0 /* TextField.swift */; };
 		E07F3580249A451A00B3B739 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07F357F249A451A00B3B739 /* MenuViewController.swift */; };
+		E080612A249A533B00E3B49F /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0806129249A533B00E3B49F /* ContainerViewController.swift */; };
+		E080612C249A53E900E3B49F /* EditingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E080612B249A53E900E3B49F /* EditingViewModel.swift */; };
 		E082C2222498C06400326198 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E082C2212498C06400326198 /* GoogleService-Info.plist */; };
 		E0BBE8B5249A2CE3000B9B35 /* viewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BBE8B4249A2CE3000B9B35 /* viewExtension.swift */; };
 		E0BBE8B9249A3B10000B9B35 /* MenuTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BBE8B8249A3B10000B9B35 /* MenuTableViewModel.swift */; };
@@ -22,7 +24,7 @@
 		E0E4F9882498C49600FF1846 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E4F9872498C49600FF1846 /* RegistrationViewController.swift */; };
 		E0E4F98A2498DDE100FF1846 /* ButtonExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E4F9892498DDE100FF1846 /* ButtonExtension.swift */; };
 		E0E4F98D2498E10100FF1846 /* RegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E4F98C2498E10100FF1846 /* RegistrationViewModel.swift */; };
-		E0E4F98F2498E36E00FF1846 /* MainViewControllerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E4F98E2498E36E00FF1846 /* MainViewControllerViewController.swift */; };
+		E0E4F98F2498E36E00FF1846 /* EditingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E4F98E2498E36E00FF1846 /* EditingViewController.swift */; };
 		FBD77396F521B1ED19E0AB38 /* Pods_AVSoft.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27D54B18A01C720D8CB55D88 /* Pods_AVSoft.framework */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +34,8 @@
 		4AEACC0E675CD731C1C97766 /* Pods-AVSoft.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AVSoft.release.xcconfig"; path = "Target Support Files/Pods-AVSoft/Pods-AVSoft.release.xcconfig"; sourceTree = "<group>"; };
 		E00B66D92498B1D600A89DC0 /* TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
 		E07F357F249A451A00B3B739 /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
+		E0806129249A533B00E3B49F /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
+		E080612B249A53E900E3B49F /* EditingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingViewModel.swift; sourceTree = "<group>"; };
 		E082C2212498C06400326198 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E0BBE8B4249A2CE3000B9B35 /* viewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewExtension.swift; sourceTree = "<group>"; };
 		E0BBE8B8249A3B10000B9B35 /* MenuTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableViewModel.swift; sourceTree = "<group>"; };
@@ -47,7 +51,7 @@
 		E0E4F9872498C49600FF1846 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		E0E4F9892498DDE100FF1846 /* ButtonExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonExtension.swift; sourceTree = "<group>"; };
 		E0E4F98C2498E10100FF1846 /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
-		E0E4F98E2498E36E00FF1846 /* MainViewControllerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewControllerViewController.swift; sourceTree = "<group>"; };
+		E0E4F98E2498E36E00FF1846 /* EditingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,10 +97,11 @@
 		E00B66DC2498B1F500A89DC0 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				E0806129249A533B00E3B49F /* ContainerViewController.swift */,
 				E0BBE8BA249A3D70000B9B35 /* Menu */,
 				E0BCD7732498B0A2004A9D6A /* loginViewController.swift */,
 				E0E4F9872498C49600FF1846 /* RegistrationViewController.swift */,
-				E0E4F98E2498E36E00FF1846 /* MainViewControllerViewController.swift */,
+				E0E4F98E2498E36E00FF1846 /* EditingViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -149,6 +154,7 @@
 			children = (
 				E0E4F98C2498E10100FF1846 /* RegistrationViewModel.swift */,
 				E0BBE8B8249A3B10000B9B35 /* MenuTableViewModel.swift */,
+				E080612B249A53E900E3B49F /* EditingViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -270,14 +276,16 @@
 			files = (
 				E0BBE8B9249A3B10000B9B35 /* MenuTableViewModel.swift in Sources */,
 				E0BCD7602498ADE0004A9D6A /* AppDelegate.swift in Sources */,
+				E080612A249A533B00E3B49F /* ContainerViewController.swift in Sources */,
 				E0E4F98D2498E10100FF1846 /* RegistrationViewModel.swift in Sources */,
-				E0E4F98F2498E36E00FF1846 /* MainViewControllerViewController.swift in Sources */,
+				E0E4F98F2498E36E00FF1846 /* EditingViewController.swift in Sources */,
 				E0E4F98A2498DDE100FF1846 /* ButtonExtension.swift in Sources */,
 				E0BBE8B5249A2CE3000B9B35 /* viewExtension.swift in Sources */,
 				E0E3E5D32498BE2E00083EC3 /* Colors.swift in Sources */,
 				E07F3580249A451A00B3B739 /* MenuViewController.swift in Sources */,
 				E0E3E5D12498BA5200083EC3 /* KeyboardViewController.swift in Sources */,
 				E0BBE8BC249A3D81000B9B35 /* MenuTableViewCell.swift in Sources */,
+				E080612C249A53E900E3B49F /* EditingViewModel.swift in Sources */,
 				E0E4F9882498C49600FF1846 /* RegistrationViewController.swift in Sources */,
 				E0BCD7742498B0A2004A9D6A /* loginViewController.swift in Sources */,
 				E00B66DA2498B1D600A89DC0 /* TextField.swift in Sources */,
