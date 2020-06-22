@@ -98,11 +98,11 @@ class ViewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let person = try! realm.objects(Person.self)
-//        if person.count != 0{
-//            getUserData()
-//        }else{
-//            getUserEmail()
-//        }
+        if person.count != 0{
+            getUserData()
+        }else{
+            getUserEmail()
+        }
         tableView.dataSource = self
         tableView.register(EditingTableViewCell.self, forCellReuseIdentifier: "ViewTV")
         self.view.backgroundColor = Colors.backColor
