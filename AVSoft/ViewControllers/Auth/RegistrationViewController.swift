@@ -220,26 +220,25 @@ class RegistrationViewController: KeyboardViewController {
                 if error != nil {
                     //check if email already exist
                     if (error?._code == 17009) {
-                        let alert = UIAlertController(title: "Email уже зарегистрирован", message: "", preferredStyle: .actionSheet)
-                        alert.addAction(UIAlertAction(title: "Войти", style: .default, handler: { (_) in
-                            self.navigationController?.popToRootViewController(animated: true)
-                        }) )
-                        alert.addAction(UIAlertAction(title: "Продолжить", style: .default, handler: { (_) in
-                            self.emailTextField.text = ""
-                        }))
-                        self.present(alert, animated: true, completion: nil)
+                        let actions = [
+                            UIAlertAction(title: "Войти", style: .cancel) { (_) in
+                                self.navigationController?.popToRootViewController(animated: true)
+                            },
+                            UIAlertAction(title: "Продолжить", style: .default, handler: { (_) in
+                                self.emailTextField.text = ""
+                            })
+                        ]
+                        AlertService.addAlertWithActions(in: self,title: "Ошибка", message: "Ошибка регистрации", actions: actions)
                         return
+                        
                     } else if(error?._code == 17011) { 
                         // All good we can move on
                         self.emailErrorLabel.isHidden = true
                         if createUser(email: email, password: password){
-                            let alert = UIAlertController(title: "Вы успешно зарегистрировались", message: nil, preferredStyle: .actionSheet)
-                            alert.addAction(UIAlertAction(title: "ОК", style: .default , handler: { (_) in
+                            AlertService.addAlertWithActions(in: self, title: "Вы успешно зарегистрировались", message: nil, actions: [UIAlertAction(title: "ОК", style: .default, handler: { (_) in
                                 self.navigationController?.popToRootViewController(animated: true)
-                            }))
-                            self.present(alert, animated: true, completion: nil)
+                            })])
                         }
-                        
                     }
                 }
             }

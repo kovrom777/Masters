@@ -25,7 +25,7 @@ class MenuViewController: UIViewController {
         tableView.register(MenuTableViewCell.self, forCellReuseIdentifier: "MenuCell")
         self.view.addSubview(tableView)
         setConstraints()
-        // Do any additional setup after loading the view.
+        
     }
     
     func setConstraints(){
@@ -48,6 +48,23 @@ extension MenuViewController:UITableViewDataSource{
         let model = MenuModel(rawValue: indexPath.row)
         cell.myLabel.text = model?.description
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            let editingVC = EditingViewController()
+            editingVC.modalPresentationStyle = .fullScreen
+            present(editingVC, animated: true, completion: nil)
+        case 1:
+            let viewVC = ViewViewController()
+            viewVC.modalPresentationStyle = .fullScreen
+            present(viewVC, animated: true, completion: nil)
+//        case 2:
+            
+        default:
+            print(1)
+        }
     }
 }
 

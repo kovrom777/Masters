@@ -85,8 +85,9 @@ class loginViewController: KeyboardViewController {
     //MARK: progressView declaration
     let progressView:UIProgressView = {
         let progress = UIProgressView()
-        progress.progress = 0
-        progress.isHidden = true
+        progress.progress = 0.5
+        progress.isHidden = false
+        progress.translatesAutoresizingMaskIntoConstraints = false
         return progress
     }()
     
@@ -103,6 +104,12 @@ class loginViewController: KeyboardViewController {
         setConstraints()
         view.dismissKey()
         registerForKeyboardNotification()
+
+//        if !progressView.isHidden{
+//            [emailTextField, emailErrorLabel, passwordTextField, passwordErrorLabel, loginButton, signUpButton].forEach{$0.alpha = 0.5}
+//        }else{
+//            [emailTextField, emailErrorLabel, passwordTextField, passwordErrorLabel, loginButton, signUpButton].forEach{$0.alpha = 1}
+//        }
         
     }
     
@@ -138,6 +145,12 @@ class loginViewController: KeyboardViewController {
         signUpButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60).isActive = true
         signUpButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60).isActive = true
         signUpButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        progressView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        progressView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        progressView.heightAnchor.constraint(equalToConstant: 10).isActive = true
+        progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40).isActive = true
+        progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40).isActive = true
     }
     
     //MARK: ViewDidLayoutSubviews
@@ -192,13 +205,9 @@ class loginViewController: KeyboardViewController {
                 if let error = error {
                     print(error.localizedDescription, error._code)
                     if (error._code == 17020){
-                        let alert = UIAlertController(title: "Ошибка", message: "Нет интернет соединения", preferredStyle: .actionSheet)
-                        alert.addAction(UIAlertAction(title: "Хорошо", style: .default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
+                        AlertService.addAlert(in: self, message: "Нет интернет соединения")
                     }else if error._code == 17011{
-                        let alert = UIAlertController(title: "Ошибка", message: "Неверно введен Email или пароль", preferredStyle: .actionSheet)
-                        alert.addAction(UIAlertAction(title: "Хорошо", style: .default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
+                        AlertService.addAlert(in: self, message: "Неверно введен Email или пароль")
                     }
                 }else{
                     UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
@@ -208,13 +217,10 @@ class loginViewController: KeyboardViewController {
                         guard let app = UIApplication.shared.delegate as? AppDelegate else {return}
                         app.reloadApp()
                     })
-                    
-//                    self.navigationController?.pushViewController(MainViewControllerViewController(), animated: true)
                 }
             }
         }
-//        progressView.setProgress(1, animated: true)
-//        progressView.isHidden = true
+
         
     }
     

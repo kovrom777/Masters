@@ -29,9 +29,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func reloadApp(){
-        let rootNavigationController = UINavigationController(rootViewController: isUserLoggedIn())
+        let VC = isUserLoggedIn()
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = rootNavigationController
+        window?.rootViewController = VC
         window?.makeKeyAndVisible()
         
     }

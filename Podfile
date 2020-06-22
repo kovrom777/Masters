@@ -10,5 +10,6 @@ target 'AVSoft' do
 	pod 'Firebase/Auth'
 	pod 'Firebase/Database'
 	pod 'Firebase/Core'
+	pod 'RealmSwift'
 
 end

@@ -2,36 +2,29 @@
 //  EditingViewModel.swift
 //  AVSoft
 //
-//  Created by Роман Ковайкин on 17.06.2020.
+//  Created by Роман Ковайкин on 18.06.2020.
 //  Copyright © 2020 Роман Ковайкин. All rights reserved.
 //
 
-import Foundation
 import UIKit
+import RealmSwift
+import Firebase
 
-class Person{
-    var firstName:String = ""
-    var secondName:String = ""
-    var telephoneNumber:String = ""
-    var email:String = "" // Подгрузить с БД
-    var password:String = ""
-    var photo:UIImage = #imageLiteral(resourceName: "DefaultPhoto")
-    var otherAttributes: [String:Any] = [:]
-    
-    init(firstName:String, secondName:String, telephoneNumber:String, email:String, password:String) {
-        self.firstName = firstName
-        self.secondName = secondName
-        self.telephoneNumber = telephoneNumber
-        self.email = email
-        self.password = password
+let realm = try! Realm()
+var attributes = realm.objects(otherAttributes.self)
+
+func signOut(vc :UIViewController){
+    do {
+        try Auth.auth().signOut()
+        UserDefaults.standard.set(false, forKey: "isUserLoggedIn")
+        UserDefaults.standard.synchronize()
+        UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: {
+            guard let app = UIApplication.shared.delegate as? AppDelegate else {return}
+            app.reloadApp()
+        })
+    } catch {
+        AlertService.addAlertWithActions(in: vc, title: "Ошибка", message: "Ошибка при выходе", actions: [UIAlertAction(title: "Хорошо", style: .cancel, handler: nil)])
     }
-    
-    func addNewAttributes (otherAttributes: [String:Any]){
-        self.otherAttributes = otherAttributes
-    }
-    
-    func updatePhoto (photo:UIImage){
-        self.photo = photo
-    }
-    
 }
+
+
