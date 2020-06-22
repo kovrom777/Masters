@@ -26,7 +26,7 @@ class KeyboardViewController: UIViewController {
         let userInfo = notification.userInfo
         let kbFrameHeight = (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         if self.view.frame.origin.y == 0 {
-            self.view.frame.origin.y -= kbFrameHeight.height - 100
+            self.view.frame.origin.y -= kbFrameHeight.height - 150
         }
 
     }

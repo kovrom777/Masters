@@ -24,12 +24,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if !UserDefaults.standard.bool(forKey: "isUserLoggedIn"){
             return loginViewController()
         }else{
-            return EditingViewController()
+            return ContainerViewController()
         }
     }
     
     func reloadApp(){
-        let VC = isUserLoggedIn()
+        let VC = UINavigationController(rootViewController: isUserLoggedIn())
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = VC
         window?.makeKeyAndVisible()

@@ -23,5 +23,13 @@ enum MenuModel:Int, CustomStringConvertible {
         case .AboutProgram: return "О программе"
         }
     }
+    
+    var viewControllers: UIViewController{
+        switch self {
+        case .Editing: return EditingViewController()
+        case .View: return ViewViewController()
+        case .AboutProgram: return AboutViewController()
+        }
+    }
 }
 

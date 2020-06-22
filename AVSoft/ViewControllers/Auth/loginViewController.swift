@@ -85,8 +85,8 @@ class loginViewController: KeyboardViewController {
     //MARK: progressView declaration
     let progressView:UIProgressView = {
         let progress = UIProgressView()
-        progress.progress = 0.5
-        progress.isHidden = false
+        progress.progress = 0
+        progress.isHidden = true
         progress.translatesAutoresizingMaskIntoConstraints = false
         return progress
     }()
@@ -104,12 +104,6 @@ class loginViewController: KeyboardViewController {
         setConstraints()
         view.dismissKey()
         registerForKeyboardNotification()
-
-//        if !progressView.isHidden{
-//            [emailTextField, emailErrorLabel, passwordTextField, passwordErrorLabel, loginButton, signUpButton].forEach{$0.alpha = 0.5}
-//        }else{
-//            [emailTextField, emailErrorLabel, passwordTextField, passwordErrorLabel, loginButton, signUpButton].forEach{$0.alpha = 1}
-//        }
         
     }
     
@@ -146,7 +140,7 @@ class loginViewController: KeyboardViewController {
         signUpButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60).isActive = true
         signUpButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
-        progressView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        progressView.topAnchor.constraint(equalTo: emailTextField.topAnchor, constant: -50).isActive = true
         progressView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         progressView.heightAnchor.constraint(equalToConstant: 10).isActive = true
         progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40).isActive = true
@@ -167,6 +161,8 @@ class loginViewController: KeyboardViewController {
         if !text.hasValidEmail() {
             emailErrorLabel.isHidden = false
         }else{
+            progressView.isHidden = false
+            progressView.setProgress(0.2, animated: true)
             emailErrorLabel.isHidden = true
         }
     }
@@ -178,6 +174,8 @@ class loginViewController: KeyboardViewController {
         if password.count < 6{
             passwordErrorLabel.isHidden = false
         }else{
+            progressView.isHidden = false
+            progressView.setProgress(0.3, animated: true)
             passwordErrorLabel.isHidden = true
         }
     }
@@ -190,29 +188,32 @@ class loginViewController: KeyboardViewController {
             emailTextField.shake()
             return
         }
-        
         guard let password = passwordTextField.text, password != "" else {
             passwordTextField.shake()
             return
         }
+        progressView.setProgress(0.5, animated: true)
         
-//        progressView.isHidden = false
-//        progressView.setProgress(0, animated: true)
+        [emailTextField, emailErrorLabel, passwordTextField, passwordErrorLabel, loginButton, signUpButton].forEach{$0.alpha = 0.5}
+        
         //MARK: Log in
         if email.count > 0 && password.count > 0 {
+            progressView.setProgress(0.9, animated: true)
             Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
                 
                 if let error = error {
                     print(error.localizedDescription, error._code)
                     if (error._code == 17020){
                         AlertService.addAlert(in: self, message: "Нет интернет соединения")
-                    }else if error._code == 17011{
+                        self.progressView.setProgress(0, animated: true)
+                    }else if error._code == 17009{
                         AlertService.addAlert(in: self, message: "Неверно введен Email или пароль")
+                        self.progressView.setProgress(0, animated: true)
                     }
                 }else{
+                    self.progressView.setProgress(1, animated: true)
                     UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
                     UserDefaults.standard.synchronize()
-                    
                     UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: {
                         guard let app = UIApplication.shared.delegate as? AppDelegate else {return}
                         app.reloadApp()
@@ -220,13 +221,10 @@ class loginViewController: KeyboardViewController {
                 }
             }
         }
-
-        
     }
     
     //MARK: Handling signUp button tap
-    @objc
-    func signUpButtonTapped(){
+    @objc func signUpButtonTapped(){
         self.navigationController?.pushViewController(RegistrationViewController(), animated: true)
     }
     

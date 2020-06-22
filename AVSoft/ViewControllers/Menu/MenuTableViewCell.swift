@@ -14,8 +14,8 @@ class MenuTableViewCell: UITableViewCell {
     var myLabel: UILabel = {
        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 25)
+        label.textColor = .black
         return label
     }()
     
@@ -23,9 +23,8 @@ class MenuTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubview(myLabel)
         
-        backgroundColor = Colors.menuBackColor
+        backgroundColor = Colors.backColor
         
-        // myLabel constaints
         myLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         myLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20).isActive = true
     }

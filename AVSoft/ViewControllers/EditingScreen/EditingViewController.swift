@@ -12,29 +12,12 @@ import RealmSwift
 
 class EditingViewController: UIViewController, UIImagePickerControllerDelegate, UITableViewDelegate, UINavigationControllerDelegate {
     
-    
     let realm = try! Realm()
     
     //MARK: ImagePicker
     let imagePicker:UIImagePickerController = {
         let ip = UIImagePickerController()
         return ip
-    }()
-    
-    let menuButton:UIButton = {
-        let btn = UIButton()
-        btn.setImage(#imageLiteral(resourceName: "Menu"), for: .normal)
-        btn.addTarget(self, action: #selector(openMenu), for: .touchUpInside)
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        return btn
-    }()
-    
-    let exitButton:UIButton = {
-        let btn = UIButton()
-        btn.setImage(#imageLiteral(resourceName: "logout"), for: .normal)
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.addTarget(self, action: #selector(exit), for: .touchUpInside)
-        return btn
     }()
     
     //MARK: ScrollView
@@ -109,6 +92,7 @@ class EditingViewController: UIViewController, UIImagePickerControllerDelegate, 
         txt.textColor = .black
         txt.translatesAutoresizingMaskIntoConstraints = false
         txt.layer.borderWidth = 1
+        txt.keyboardType = .numberPad
         return txt
     }()
     
@@ -127,6 +111,7 @@ class EditingViewController: UIViewController, UIImagePickerControllerDelegate, 
         txt.isUserInteractionEnabled = true
         txt.textColor = .black
         txt.translatesAutoresizingMaskIntoConstraints = false
+        txt.keyboardType = .emailAddress
         txt.layer.borderWidth = 1
         return txt
     }()
@@ -163,19 +148,18 @@ class EditingViewController: UIViewController, UIImagePickerControllerDelegate, 
     //MARK: ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if realm.isEmpty{
-            getUserData()
-        }else{
-            showUserData()
-        }
+        showUserData()
         
         self.view.backgroundColor = Colors.backColor
         
         view.addSubview(scrollView)
         setScrollConstraints()
         
-        [menuButton, exitButton ,profileImageView ,firstNameLabel, firstNameTextField, secondNameLabel, secondNameTextField, telephoneNumberLabel, telephoneNumberTextField, emailLabel, emailTextField, plusButton, tableView, saveButton].forEach{self.scrollView.addSubview($0)}
+        [profileImageView ,firstNameLabel, firstNameTextField, secondNameLabel, secondNameTextField, telephoneNumberLabel, telephoneNumberTextField, emailLabel, emailTextField, plusButton, tableView, saveButton].forEach{self.scrollView.addSubview($0)}
+        
+        let textFields = [firstNameTextField, secondNameTextField, telephoneNumberTextField, emailTextField]
+        UITextField.connectAllTxtFieldFields(txtfields: textFields)
+        emailTextField.addDoneButtonOnKeyboard()
         
         self.view.dismissKey()
         
@@ -185,12 +169,13 @@ class EditingViewController: UIViewController, UIImagePickerControllerDelegate, 
         tableView.dataSource = self
         tableView.register(EditingTableViewCell.self, forCellReuseIdentifier: "DopAttribute")
         setConstraints()
+        configureNavUI()
     }
     
     
     //MARK: ViewDidLayoutSubviews
     override func viewDidLayoutSubviews() {
-        self.scrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height + 200)
+        self.scrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height + 350)
         self.saveButton.setGradientBackground(colorTop: Colors.firstColorForGradient, colorBottom: Colors.secondColorForGradient)
     }
     
@@ -204,17 +189,7 @@ class EditingViewController: UIViewController, UIImagePickerControllerDelegate, 
 
     
     func setConstraints(){
-        
-        menuButton.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 7).isActive = true
-        menuButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
-        menuButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        menuButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        
-        exitButton.topAnchor.constraint(equalTo: menuButton.topAnchor).isActive = true
-        exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
-        exitButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
-        exitButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        
+
         profileImageView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 30).isActive = true
         profileImageView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
@@ -270,7 +245,7 @@ class EditingViewController: UIViewController, UIImagePickerControllerDelegate, 
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         tableView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         
-        saveButton.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 50).isActive = true
+        saveButton.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 10).isActive = true
         saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40).isActive = true
         saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40).isActive = true
         saveButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -316,14 +291,15 @@ class EditingViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
         profileImageView.image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
         
-        if !realm.isEmpty{
-            let person = realm.objects(Person.self)
+        
+        let person = try! realm.objects(Person.self)
+        if person.count != 0{
             try! realm.write{
                 person.first?.photo = image as NSData
             }
         }else{
-            let person = realm.objects(Person.self)
-            person.first?.photo = image as NSData
+            let person = Person()
+            person.photo = image as NSData
             try! realm.write{
                 realm.add(person)
             }
@@ -353,9 +329,9 @@ class EditingViewController: UIViewController, UIImagePickerControllerDelegate, 
             return
         }
         
-        if !realm.isEmpty{
-            let person = realm.objects(Person.self)
-            
+        let person = try! realm.objects(Person.self)
+        
+        if person.count != 0{
             try! realm.write{
                 person.first?.firstName = firstName
                 person.first?.secondName = secondName
@@ -368,12 +344,11 @@ class EditingViewController: UIViewController, UIImagePickerControllerDelegate, 
             person.secondName = secondName
             person.telephoneNumber = number
             person.email = email
-            
             try! realm.write{
                 realm.add(person)
             }
-            
         }
+        dismiss(animated: true, completion: nil)
     }
     
     //MARK: Exit Button action
@@ -402,7 +377,7 @@ class EditingViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     func showUserData(){
-        let person = realm.objects(Person.self)
+        let person = try! realm.objects(Person.self)
         firstNameTextField.text = person.first?.firstName
         secondNameTextField.text = person.first?.secondName
         telephoneNumberTextField.text = person.first?.telephoneNumber
@@ -411,28 +386,18 @@ class EditingViewController: UIViewController, UIImagePickerControllerDelegate, 
         profileImageView.image = UIImage(data: data)
     }
     
-    //MARK: Open menu action
-    @objc func openMenu(){
-        present(MenuViewController(), animated: true, completion: nil)
+    @objc func close(){
+        dismiss(animated: true, completion: nil)
     }
+
     
-    //MARK: GetUserEmail
-    func getUserData(){
-        guard let uid = Auth.auth().currentUser?.uid else {
-            assertionFailure("Невозможно получить данные пользователя")
-            return
-        }
-        
-        let person = realm.objects(Person.self)
-        
-        Database.database().reference().child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let dictionary = snapshot.value as? [String:Any]{
-                guard let email = dictionary["Email"] else {return}
-                person.first?.email = email as? String
-            }
-        })
-        
+    //MARK: Nav configure
+    func configureNavUI(){
+        navigationController?.navigationBar.tintColor = .lightGray
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "close").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(close))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "logout").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(exit))
     }
+
     
 }
 

@@ -8,12 +8,14 @@
 
 import UIKit
 import RealmSwift
-
+import Firebase
 
 class ViewViewController: UIViewController {
-
-    let realm = try! Realm()
     
+    let realm = try! Realm()
+    var delegate: ViewControllerDelegate?
+    
+    //MARK: Scroll view
     let scrollView:UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
@@ -21,117 +23,119 @@ class ViewViewController: UIViewController {
         return scroll
     }()
     
-    let menuButton:UIButton = {
-        let btn = UIButton()
-        btn.setImage(#imageLiteral(resourceName: "Menu"), for: .normal)
-        btn.addTarget(self, action: #selector(openMenu), for: .touchUpInside)
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        return btn
-    }()
-    
-    let exitButton:UIButton = {
-        let btn = UIButton()
-        btn.setImage(#imageLiteral(resourceName: "logout"), for: .normal)
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.addTarget(self, action: #selector(exit), for: .touchUpInside)
-        return btn
-    }()
-    
+    //MARK: Profile Image
     let profileImageView:UIImageView = {
-          let view = UIImageView()
-          view.translatesAutoresizingMaskIntoConstraints = false
-          view.layer.cornerRadius = 75
-          view.layer.borderWidth = 1
-          view.clipsToBounds = true
-          return view
-      }()
+        let view = UIImageView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 75
+        view.layer.borderWidth = 1
+        view.clipsToBounds = true
+        view.isUserInteractionEnabled = true
+        return view
+    }()
     
+    //MARK: First name label
     let firstNameLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.isUserInteractionEnabled = true
         lbl.textColor = .black
+        lbl.layer.borderWidth = 1
         return lbl
     }()
     
+    //MARK: second name label
     let secondNameLabel:UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.isUserInteractionEnabled = true
         lbl.textColor = .black
+        lbl.layer.borderWidth = 1
         return lbl
     }()
     
+    //MARK: Telephone Number Label
     let telephoneNumberLabel:UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.isUserInteractionEnabled = true
         lbl.textColor = .black
+        lbl.layer.borderWidth = 1
         return lbl
     }()
     
+    //MARK: Email Label
     let emailLabel:UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.isUserInteractionEnabled = true
         lbl.textColor = .black
+        lbl.layer.borderWidth = 1
         return lbl
     }()
     
+    //MARK: Table View
     let tableView:UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
+        table.backgroundColor = Colors.backColor
+        table.separatorStyle = .none
         return table
     }()
     
+    //MARK: View will appear
+    override func viewWillAppear(_ animated: Bool) {
+        tableView.reloadData()
+        getUserData()
+    }
+    
+    //MARK: ViewDidLayoutSubviews
+    override func viewDidLayoutSubviews() {
+        self.scrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height)
+    }
+    
+    //MARK: ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if !realm.isEmpty{
-            getUserData()
-        }
-        
+        let person = try! realm.objects(Person.self)
+//        if person.count != 0{
+//            getUserData()
+//        }else{
+//            getUserEmail()
+//        }
+        tableView.dataSource = self
+        tableView.register(EditingTableViewCell.self, forCellReuseIdentifier: "ViewTV")
         self.view.backgroundColor = Colors.backColor
         view.addSubview(scrollView)
         setScrollConstraints()
         
-        [firstNameLabel, secondNameLabel, telephoneNumberLabel, emailLabel].forEach{$0.addGestureRecognizer(setGesture())}
+        [profileImageView ,firstNameLabel, secondNameLabel, telephoneNumberLabel, emailLabel, tableView].forEach{$0.addGestureRecognizer(setGesture())}
         
         
-        [menuButton, exitButton ,profileImageView ,firstNameLabel, secondNameLabel, emailLabel, telephoneNumberLabel, tableView].forEach{scrollView.addSubview($0)}
+        [profileImageView ,firstNameLabel, secondNameLabel, emailLabel, telephoneNumberLabel, tableView].forEach{scrollView.addSubview($0)}
         setConstraints()
-
+        configureNavBar()
+        
     }
     
+    
+    //MARK: setGesture
     func setGesture() ->UITapGestureRecognizer{
         let recogniser = UITapGestureRecognizer(target: self, action: #selector(tapHandling))
         return recogniser
     }
     
-    override func viewDidLayoutSubviews() {
-        self.scrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height + 100)
-    }
     
+    //MARK: Constraints
     func setScrollConstraints(){
-        scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
     
     func setConstraints(){
-        
-        menuButton.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 7).isActive = true
-        menuButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
-        menuButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        menuButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        
-        exitButton.topAnchor.constraint(equalTo: menuButton.topAnchor).isActive = true
-        exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
-        exitButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
-        exitButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        
-        
+    
         profileImageView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20).isActive = true
         profileImageView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
@@ -160,15 +164,27 @@ class ViewViewController: UIViewController {
         tableView.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 30).isActive = true
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
-        tableView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        tableView.heightAnchor.constraint(equalToConstant: 200).isActive = true
     }
     
+    //MARK: objc functions
     @objc func tapHandling(){
-        let editingVC = EditingViewController()
+        let editingVC = UINavigationController(rootViewController:EditingViewController())
         editingVC.modalPresentationStyle = .fullScreen
         present(editingVC, animated: true, completion: nil)
     }
     
+    @objc func exit(){
+         signOut(vc: self)
+     }
+     
+     @objc func openMenu(){
+        dismiss(animated: true, completion: nil)
+         delegate?.handleMenuToggle(forMenuModel: nil)
+     }
+    
+    
+    //MARK: Getting User data
     func getUserData(){
         let person = try! realm.objects(Person.self)
         firstNameLabel.text = person.first?.firstName
@@ -179,11 +195,49 @@ class ViewViewController: UIViewController {
         profileImageView.image = UIImage(data: data)
     }
     
-    @objc func exit(){
-        signOut(vc: self)
+ 
+    
+    func getUserEmail(){
+        guard let uid = Auth.auth().currentUser?.uid else {
+            assertionFailure("Невозможно получить данные пользователя")
+            return
+        }
+        
+        Database.database().reference().child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String:Any]{
+                guard let email = dictionary["Email"] else {return}
+                let person = Person()
+                person.email = email as? String
+                self.emailLabel.text = person.email
+                try! self.realm.write{
+                    self.realm.add(person)
+                }
+            }
+        })
     }
     
-    @objc func openMenu(){
-        present(MenuViewController(), animated: true, completion: nil)
+    
+    //MARK: configure NavBar
+    func configureNavBar(){
+        navigationController?.navigationBar.barTintColor = .lightGray
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "Menu").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(openMenu))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "logout").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(exit))
     }
+    
+}
+
+extension ViewViewController: UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return attributes.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ViewTV") as! EditingTableViewCell
+        cell.backgroundColor = Colors.backColor
+        cell.key.text = attributes[indexPath.row].key
+        cell.value.text = attributes[indexPath.row].value
+        return cell
+    }
+    
+    
 }
